@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
+/* Caldera design tokens — see DESIGN.md */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --ember: #fc5000;
+  --plasma: #524ae9;
+  --sulfur: #f5f28e;
+  --limestone: #f7f6f2;
+  --pumice: #e2e2df;
+  --obsidian: #070607;
+  --chalk: #ffffff;
+
+  /* Semantic */
+  --background: var(--pumice);
+  --foreground: var(--obsidian);
+  --surface: var(--limestone);
+  --accent: var(--ember);
+
+  /* Radii */
+  --radius-cards: 40px;
+  --radius-pills: 800px;
+  --radius-small: 16px;
+  --radius-inputs: 100px;
+  --radius-medium: 20px;
+  --radius-buttons: 40px;
+
+  /* Spacing / layout */
+  --page-max-width: 1280px;
+  --section-gap: 80px;
+  --card-padding: 40px;
+  --element-gap: 16px;
 }
 
 @theme inline {
+  --color-ember: var(--ember);
+  --color-plasma: var(--plasma);
+  --color-sulfur: var(--sulfur);
+  --color-limestone: var(--limestone);
+  --color-pumice: var(--pumice);
+  --color-obsidian: var(--obsidian);
+  --color-chalk: var(--chalk);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Display = Bebas Neue (PP Neue Corp Compact substitute); body = DM Sans 500 */
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
+  --font-caption: ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: var(--radius-cards);
+  --radius-pill: var(--radius-pills);
+  --radius-sm: var(--radius-small);
+  --radius-input: var(--radius-inputs);
+  --radius-md: var(--radius-medium);
+  --radius-button: var(--radius-buttons);
+
+  --max-width-page: var(--page-max-width);
+  --spacing-section: var(--section-gap);
+  --spacing-card: var(--card-padding);
+  --spacing-element: var(--element-gap);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 500;
 }
