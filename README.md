@@ -2,7 +2,7 @@
 <img width="1470" height="844" alt="image" src="https://github.com/user-attachments/assets/f503310b-7342-4625-8c2e-88456491ace5" />
 
 
-Chat en lenguaje natural sobre archivos CSV. El modelo orquesta; el código calcula (profile + tools / DuckDB). El CSV completo no se manda al LLM.
+Chat en lenguaje natural sobre archivos CSV. El modelo orquesta; el código calcula (profile + tools / DuckDB). Una version simple que permite consultar con lenguaje natural los datos de, por el momento, tu CSV. Esta herramienta podría ser iterada para funcionar como algo mas, quizás transformar una base de datos que un comercio/equipo tenia en Google Sheet/Excel o si necesitaras consultar un CSV en tu aplicación, esta herramienta podría ser de utilidad.
 
 
 ## Requisitos
@@ -17,7 +17,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Editá `.env.local` y poné tu `GOOGLE_GENERATIVE_AI_API_KEY`. Esa variable **solo** se usa en el server (API routes); no la prefijes con `NEXT_PUBLIC_`.
+Editá `.env.local` y poné tu `GOOGLE_GENERATIVE_AI_API_KEY`. Esa variable **solo** se usa en el server (API routes).
 
 ## Desarrollo
 
