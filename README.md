@@ -1,4 +1,6 @@
 # AI Data Analyst
+<img width="1470" height="844" alt="image" src="https://github.com/user-attachments/assets/f503310b-7342-4625-8c2e-88456491ace5" />
+
 
 Chat en lenguaje natural sobre archivos CSV. El modelo orquesta; el código calcula (profile + tools / DuckDB). El CSV completo no se manda al LLM.
 
