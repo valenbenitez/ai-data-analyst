@@ -15,7 +15,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Editá `.env.local` y poné tu `GOOGLE_GEMINI_API_KEY`. Esa variable **solo** se usa en el server (API routes); no la prefijes con `NEXT_PUBLIC_`.
+Editá `.env.local` y poné tu `GOOGLE_GENERATIVE_AI_API_KEY`. Esa variable **solo** se usa en el server (API routes); no la prefijes con `NEXT_PUBLIC_`.
 
 ## Desarrollo
 
