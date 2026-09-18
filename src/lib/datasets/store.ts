@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, writeFile, readFile, access } from "node:fs/promises";
 import path from "node:path";
+import { DatasetProfile } from "./profile";
 
 const DATA_ROOT = path.join(process.cwd(), ".data", "uploads");
 
@@ -66,4 +67,21 @@ export async function getDatasetCsvPath(id: string): Promise<string | null> {
 
 export function getUploadsDir() {
   return DATA_ROOT;
+}
+
+function profilePath(id: string) {
+  return path.join(DATA_ROOT, `${id}.profile.json`);
+}
+
+export async function saveProfile(id: string, profile: DatasetProfile) {
+  await writeFile(profilePath(id), JSON.stringify(profile, null, 2), "utf8");
+}
+
+export async function getProfile(id: string): Promise<DatasetProfile | null> {
+  try {
+    const raw = await readFile(profilePath(id), "utf8");
+    return JSON.parse(raw) as DatasetProfile;
+  } catch (error) {
+    return null;
+  }
 }

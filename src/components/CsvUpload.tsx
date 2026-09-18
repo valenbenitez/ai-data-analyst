@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { DatasetProfile } from "@/lib/datasets/profile";
 
 type DatasetMeta = {
   id: string;
@@ -9,10 +10,12 @@ type DatasetMeta = {
   sizeBytes: number;
 };
 
+type UploadSuccess = DatasetMeta & { profile: DatasetProfile };
+
 type Status =
   | { kind: "idle" }
   | { kind: "uploading" }
-  | { kind: "success"; meta: DatasetMeta }
+  | { kind: "success"; data: UploadSuccess }
   | { kind: "error"; message: string };
 
 function isCsv(file: File) {
@@ -24,7 +27,12 @@ function isCsv(file: File) {
   );
 }
 
-export function CsvUpload() {
+type Props = {
+  onSuccess?: (data: UploadSuccess) => void;
+  onClear?: () => void;
+};
+
+export function CsvUpload({ onSuccess, onClear }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -39,6 +47,7 @@ export function CsvUpload() {
     }
     setFile(next);
     setStatus({ kind: "idle" });
+    onClear?.();
   }
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -70,12 +79,24 @@ export function CsvUpload() {
           kind: "error",
           message: data.error ?? "No se pudo subir el archivo.",
         });
+        onClear?.();
         return;
       }
 
-      setStatus({ kind: "success", meta: data as DatasetMeta });
+      if (!data.profile) {
+        setStatus({
+          kind: "error",
+          message: "Upload OK pero no se recibió el profile.",
+        });
+        return;
+      }
+
+      const success = data as UploadSuccess;
+      setStatus({ kind: "success", data: success });
+      onSuccess?.(success);
     } catch {
       setStatus({ kind: "error", message: "Error de red al subir el CSV." });
+      onClear?.();
     }
   }
 
@@ -109,9 +130,7 @@ export function CsvUpload() {
         }`}
       >
         <span className="text-base text-obsidian">
-          {file
-            ? file.name
-            : "Soltá el CSV acá o hacé click para elegir"}
+          {file ? file.name : "Soltá el CSV acá o hacé click para elegir"}
         </span>
         <span className="font-caption text-xs text-obsidian/60">
           {file
@@ -134,6 +153,7 @@ export function CsvUpload() {
             onClick={() => {
               setFile(null);
               setStatus({ kind: "idle" });
+              onClear?.();
             }}
             className="rounded-[40px] border-[1.5px] border-obsidian px-4 py-3 text-base text-obsidian"
           >
@@ -144,10 +164,10 @@ export function CsvUpload() {
 
       {status.kind === "success" && (
         <p className="text-sm leading-[1.2] text-obsidian">
-          Listo: <strong>{status.meta.originalName}</strong>
+          Listo: <strong>{status.data.originalName}</strong>
           <br />
           <span className="font-caption text-xs text-obsidian/70">
-            id: {status.meta.id}
+            id: {status.data.id} · {status.data.profile.rowCount} filas
           </span>
         </p>
       )}

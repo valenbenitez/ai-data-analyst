@@ -1,5 +1,5 @@
 import { AppShell } from "@/components/AppShell";
-import { CsvUpload } from "@/components/CsvUpload";
+import { DatasetWorkspace } from "@/components/DatasetWorkspace";
 import { PointerGlow } from "@/components/PointerGlow";
 
 export default function Home() {
@@ -24,20 +24,7 @@ export default function Home() {
             </div>
           </header>
 
-          <div className="rounded-card bg-surface p-card">
-            <div className="mb-6 flex items-center gap-3">
-              <span
-                aria-hidden
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-obsidian text-sm text-chalk"
-              >
-                1
-              </span>
-              <h2 className="text-[30px] leading-[1.5] text-obsidian">
-                Elegí un dataset
-              </h2>
-            </div>
-            <CsvUpload />
-          </div>
+          <DatasetWorkspace />
         </section>
       </AppShell>
     </>
