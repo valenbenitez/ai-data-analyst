@@ -2,11 +2,13 @@ import {
   convertToModelMessages,
   createUIMessageStreamResponse,
   smoothStream,
+  stepCountIs,
   streamText,
   toUIMessageStream,
   type UIMessage,
 } from "ai";
 import { google } from "@ai-sdk/google";
+import { createDatasetTools } from "@/lib/datasets/agent-tools";
 import { getDatasetMeta, getProfile } from "@/lib/datasets/store";
 import type { DatasetProfile } from "@/lib/datasets/profile";
 
@@ -44,16 +46,20 @@ function profileToSystemPrompt(
   return [
     "Sos un analista de datos. Respondé en español, claro y conciso.",
     "Podés usar markdown simple (títulos, listas, negrita); se renderiza en la UI.",
-    "Solo tenés un PROFILE del dataset (schema/stats/sample). NO el CSV completo.",
-    "Si faltan datos para una agregación exacta, pedí aclaración o indicá que más adelante usaremos tools/SQL.",
-    "No inventes números que no estén en el profile o en el sample.",
+    "Tenés un PROFILE compacto del dataset (schema/stats/sample). NO el CSV completo.",
+    "Usá tools cuando necesites datos concretos:",
+    "- get_schema: columnas y tipos",
+    "- describe_column: stats de una columna",
+    "- sample_rows: filas reales del CSV (máx 20)",
+    "No inventes números ni filas que no vengan del profile o de las tools.",
+    "Si falta una agregación exacta sobre muchas filas, pedí aclaración (SQL llega después).",
     "",
     `Dataset: ${originalName}`,
     `Filas: ${profile.rowCount}`,
     "Columnas:",
     columns,
     "",
-    "Sample (hasta 5 filas):",
+    "Sample (hasta 5 filas, del profile):",
     JSON.stringify(profile.sample, null, 2),
   ].join("\n");
 }
@@ -84,6 +90,8 @@ export async function POST(req: Request) {
     model: google("gemini-3.6-flash"),
     system: profileToSystemPrompt(meta.originalName, profile),
     messages: await convertToModelMessages(messages),
+    tools: createDatasetTools(datasetId),
+    stopWhen: stepCountIs(5),
     providerOptions: {
       google: {
         thinkingConfig: {

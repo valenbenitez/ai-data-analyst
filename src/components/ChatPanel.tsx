@@ -94,9 +94,26 @@ export function ChatPanel({ datasetId, datasetName }: Props) {
                   {isUser ? "Vos" : "Analista"}
                 </span>
                 {message.parts.map((part, i) => {
+                  if (part.type.startsWith("tool-")) {
+                    const toolName = part.type.replace(/^tool-/, "");
+                    const state =
+                      "state" in part ? String(part.state) : "unknown";
+                    return (
+                      <p
+                        key={`${message.id}-${i}`}
+                        className="my-1 rounded-pill bg-sulfur px-3 py-1 font-caption text-xs text-obsidian"
+                      >
+                        Tool: {toolName}
+                        {state === "output-available" || state === "result"
+                          ? " · ok"
+                          : state === "output-error"
+                            ? " · error"
+                            : " · …"}
+                      </p>
+                    );
+                  }
                   if (part.type !== "text" || !part.text) return null;
                   if (isUser || isLastAssistant) {
-                    // Plain text while streaming — markdown completo al terminar
                     return (
                       <span
                         key={`${message.id}-${i}`}
