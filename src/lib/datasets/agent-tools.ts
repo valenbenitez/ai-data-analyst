@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
 import { parseCsv, rowsToObjects } from "@/lib/datasets/csv";
+import { runSql } from "@/lib/datasets/sql";
 import { getDatasetCsvPath, getProfile } from "@/lib/datasets/store";
 
 const MAX_SAMPLE_ROWS = 20;
@@ -91,6 +92,23 @@ export function createDatasetTools(datasetId: string) {
                 : "No se pudo leer el CSV.",
           };
         }
+      },
+    }),
+
+    run_sql: tool({
+      description:
+        "Ejecuta SQL de solo lectura (SELECT/WITH) sobre el dataset. La tabla se llama `data`. Resultado acotado a 50 filas. Usá esto para agregaciones, filtros y GROUP BY.",
+      inputSchema: z.object({
+        sql: z
+          .string()
+          .describe(
+            "Query SQL. Ejemplo: SELECT col, COUNT(*) AS n FROM data GROUP BY 1 ORDER BY n DESC",
+          ),
+      }),
+      execute: async ({ sql }) => {
+        const csvPath = await getDatasetCsvPath(datasetId);
+        if (!csvPath) return { error: "CSV no encontrado." };
+        return runSql(csvPath, sql);
       },
     }),
   };
